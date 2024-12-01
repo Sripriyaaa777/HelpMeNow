@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Detection and Translation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Language Detection and Translation</h1>
+    <label for="userMessage">Enter your message:</label>
+    <input type="text" id="userMessage" placeholder="Type a message...">
+    <button onclick="detectAndTranslate()">Translate to English</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    async function detectAndTranslate() {
+        const userMessage = document.getElementById("userMessage").value;
+        const resultDiv = document.getElementById("result");
+
+        if (!userMessage.trim()) {
+            resultDiv.textContent = "Please enter a message.";
+            return;
+        }
+
+        try {
+            // Step 1: Detect the language of the user's message
+            const detectResponse = await fetch('https://libretranslate.de/detect', {
+                method: 'POST',
+                body: new URLSearchParams({ q: userMessage }),
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            });
+
+            const detectData = await detectResponse.json();
+            const detectedLanguage = detectData[0].language;
+
+            // Display detected language
+            resultDiv.innerHTML = <p>Detected Language: ${detectedLanguage}</p>;
+
+            // Step 2: Translate to English if needed
+            if (detectedLanguage !== 'en') {
+                const translateResponse = await fetch('https://libretranslate.de/translate', {
+                    method: 'POST',
+                    body: new URLSearchParams({
+                        q: userMessage,
+                        source: detectedLanguage,
+                        target: 'en'
+                    }),
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                });
+
+                const translateData = await translateResponse.json();
+                const translatedMessage = translateData.translatedText;
+
+                // Display translated message
+                resultDiv.innerHTML += <p>Translated Message: ${translatedMessage}</p>;
+            } else {
+                // If the message is already in English
+                resultDiv.innerHTML += <p>Your message is already in English: ${userMessage}</p>;
+            }
+        } catch (error) {
+            resultDiv.textContent = "An error occurred while processing your request. Please try again.";
+        }
+    }
+</script>
+
+</body>
+</html>
