@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #141414;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: url('https://assets.nflxext.com/ffe/siteui/vlv3/eeec4f3c-a4de-429b-b799-d74be4cf0e9b/408207a1-4ae7-4e35-b81d-b9838c8a1d10/NG-en-20230916-popsignuptwoweeks-perspective_alpha_website_large.jpg') no-repeat center center/cover;
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-container {
+            background-color: rgba(0, 0, 0, 0.85);
+            padding: 40px;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 10px;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #333;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #ff4081;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #ff4081;
+        }
+
+        .footer {
+            margin-top: 20px;
+        }
+
+        .footer p {
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #e50914;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="overlay">
+            <div class="form-container">
+                <h1>Sign Up</h1>
+                <form action="#" method="post">
+                    <input type="text" name="username" placeholder="Username" required>
+                    <input type="email" name="email" placeholder="Email" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <button type="submit" class="btn">Sign Up</button>
+                </form>
+                <div class="footer">
+                    <p>Already have an account? <a href="login1.html">Log In</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
