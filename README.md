@@ -110,3 +110,6 @@ A challenge faced was the inability to obtain necessary APIs for crime data from
 We attempted to implement a translation feature using the Azure AI Translator API to help users who do not speak English report incidents. This feature is still a work in progress and aims to translate native languages into English for incident reporting.
 ## Current Limitations
 The website can currently record audio and video for evidence but cannot upload this content to cloud services or other platforms. This feature is planned for future updates.
+
+video link: https://drive.google.com/file/d/1-8063MY6le5Te9z2dtw5lKU6R5zl4Ydu/view?usp=drivesdk
+[Visit video](https://drive.google.com/file/d/1-8063MY6le5Te9z2dtw5lKU6R5zl4Ydu/view?usp=drivesdk)
