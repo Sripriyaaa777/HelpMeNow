@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio & Video Recording</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #141414; /* Netflix dark theme */
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #e50914;
+        }
+
+        video, audio {
+            width: 80%;
+            max-width: 500px;
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+
+        .controls {
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #e50914;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            margin: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(229, 9, 20, 0.5);
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #b20710;
+        }
+    </style>
+</head>
+<body>
+    <h1>Audio & Video Recording</h1>
+
+    <div class="controls">
+        <button id="startVideoBtn">Start Video Recording</button>
+        <button id="stopVideoBtn" disabled>Stop Video Recording</button>
+        <br>
+        <button id="startAudioBtn">Start Audio Recording</button>
+        <button id="stopAudioBtn" disabled>Stop Audio Recording</button>
+    </div>
+
+    <video id="videoPlayer" controls></video>
+    <audio id="audioPlayer" controls></audio>
+
+    <script>
+        let mediaRecorderVideo, mediaRecorderAudio;
+        let videoChunks = [], audioChunks = [];
+
+        // Video Recording
+        document.getElementById('startVideoBtn').onclick = async () => {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            document.getElementById('videoPlayer').srcObject = stream;
+
+            mediaRecorderVideo = new MediaRecorder(stream);
+            mediaRecorderVideo.ondataavailable = (e) => videoChunks.push(e.data);
+
+            mediaRecorderVideo.onstop = () => {
+                const blob = new Blob(videoChunks, { type: 'video/webm' });
+                const videoURL = URL.createObjectURL(blob);
+                document.getElementById('videoPlayer').srcObject = null; // Clear live stream
+                document.getElementById('videoPlayer').src = videoURL; // Set recorded video
+                videoChunks = [];
+            };
+
+            mediaRecorderVideo.start();
+            document.getElementById('startVideoBtn').disabled = true;
+            document.getElementById('stopVideoBtn').disabled = false;
+        };
+
+        document.getElementById('stopVideoBtn').onclick = () => {
+            mediaRecorderVideo.stop();
+            document.getElementById('videoPlayer').srcObject.getTracks().forEach(track => track.stop());
+            document.getElementById('startVideoBtn').disabled = false;
+            document.getElementById('stopVideoBtn').disabled = true;
+        };
+
+        // Audio Recording
+        document.getElementById('startAudioBtn').onclick = async () => {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorderAudio = new MediaRecorder(stream);
+
+            mediaRecorderAudio.ondataavailable = (e) => audioChunks.push(e.data);
+            mediaRecorderAudio.onstop = () => {
+                const blob = new Blob(audioChunks, { type: 'audio/webm' });
+                document.getElementById('audioPlayer').src = URL.createObjectURL(blob);
+                audioChunks = [];
+            };
+
+            mediaRecorderAudio.start();
+            document.getElementById('startAudioBtn').disabled = true;
+            document.getElementById('stopAudioBtn').disabled = false;
+        };
+
+        document.getElementById('stopAudioBtn').onclick = () => {
+            mediaRecorderAudio.stop();
+            document.getElementById('startAudioBtn').disabled = false;
+            document.getElementById('stopAudioBtn').disabled = true;
+        };
+    </script>
+</body>
+</html>
