@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety App</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #1a1a1a; /* Deep black */
+            color: #ff477e; /* Dark pink */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        #container {
+            width: 90%;
+            max-width: 800px;
+            background-color: #2c2c2c; /* Dark grey */
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+        }
+        #map {
+            height: 300px;
+            border-radius: 10px;
+        }
+        #controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background: #3e3e3e;
+            color: white;
+        }
+        input {
+            flex: 1;
+            min-width: 200px;
+        }
+        button {
+            background: #ff477e;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #ff75a3;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 10px;
+            background: #3e3e3e;
+            color: white;
+            border-radius: 5px;
+            text-align: center;
+        }
+        #sos-alert {
+            display: none;
+            margin-top: 10px;
+            padding: 15px;
+            background: red;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="map"></div>
+        <div id="controls">
+            <input id="destination" placeholder="Enter destination" />
+            <button onclick="startJourney()">Start Journey</button>
+            <button onclick="shareLocation()">Share Location</button>
+        </div>
+        <div id="output"></div>
+        <div id="sos-alert">SOS Alert! You have deviated from your route.</div>
+    </div>
+
+    <script>
+        let map, userCoords, destinationCoords, routePolyline;
+
+        // Initialize the map
+        map = L.map('map').setView([12.9716, 77.5946], 13); // Default to Bangalore (India)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors',
+        }).addTo(map);
+
+        // Get user's current location
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    userCoords = [position.coords.latitude, position.coords.longitude];
+                    map.setView(userCoords, 14);
+                    L.marker(userCoords).addTo(map).bindPopup('Your Location').openPopup();
+                },
+                () => {
+                    document.getElementById('output').innerText = 'Geolocation access denied or unavailable.';
+                }
+            );
+        } else {
+            document.getElementById('output').innerText = 'Geolocation is not supported by your browser.';
+        }
+
+        // Function to calculate route using OSRM API
+        function calculateRoute(startCoords, endCoords) {
+            const url = http://router.project-osrm.org/route/v1/driving/${startCoords[1]},${startCoords[0]};${endCoords[1]},${endCoords[0]}?overview=full&geometries=geojson;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const output = document.getElementById('output');
+                    if (data.routes && data.routes.length > 0) {
+                        const route = data.routes[0];
+                        const duration = route.duration / 60; // Convert from seconds to minutes
+                        const distance = route.distance / 1000; // Convert from meters to km
+
+                        // Remove existing polyline
+                        if (routePolyline) {
+                            map.removeLayer(routePolyline);
+                        }
+
+                        // Draw the new route
+                        routePolyline = L.geoJSON({
+                            type: "LineString",
+                            coordinates: route.geometry.coordinates,
+                        }).addTo(map);
+
+                        output.innerHTML = `
+                            <strong>Estimated Travel Time:</strong> ${duration.toFixed(2)} minutes<br>
+                            <strong>Estimated Distance:</strong> ${distance.toFixed(2)} km
+                        `;
+
+                        // Start monitoring for route deviation
+                        monitorDeviation(route.geometry.coordinates);
+                    } else {
+                        output.innerText = 'Could not calculate the route.';
+                    }
+                })
+                .catch(() => {
+                    document.getElementById('output').innerText = 'Error fetching the route data.';
+                });
+        }
+
+        // Monitor route deviation
+        function monitorDeviation(routeCoordinates) {
+            setInterval(() => {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(position => {
+                        const currentCoords = [position.coords.latitude, position.coords.longitude];
+                        const distanceFromRoute = routeCoordinates.some(coord => {
+                            return getDistanceFromLatLonInKm(
+                                coord[1],
+                                coord[0],
+                                currentCoords[0],
+                                currentCoords[1]
+                            ) < 0.2; // 200 meters deviation threshold
+                        });
+
+                        if (!distanceFromRoute) {
+                            document.getElementById('sos-alert').style.display = 'block';
+                        } else {
+                            document.getElementById('sos-alert').style.display = 'none';
+                        }
+                    });
+                }
+            }, 5000); // Check every 5 seconds
+        }
+
+        // Utility: Haversine formula for distance
+        function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radius of the earth in km
+            const dLat = deg2rad(lat2 - lat1);
+            const dLon = deg2rad(lon2 - lon1);
+            const a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        function deg2rad(deg) {
+            return deg * (Math.PI / 180);
+        }
+
+        // Start journey function
+        function startJourney() {
+            const destination = document.getElementById('destination').value.trim();
+            const output = document.getElementById('output');
+            if (!destination) {
+                output.innerText = 'Please enter a destination.';
+                return;
+            }
+
+            // Fetch coordinates of the destination using Nominatim API
+            fetch(https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destination)})
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length === 0) {
+                        output.innerText = 'Destination not found! Please try a different location.';
+                        return;
+                    }
+
+                    destinationCoords = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+                    L.marker(destinationCoords).addTo(map).bindPopup('Destination').openPopup();
+                    map.setView(destinationCoords, 14);
+
+                    // Calculate the route
+                    calculateRoute(userCoords, destinationCoords);
+                })
+                .catch(() => {
+                    output.innerText = 'Failed to fetch destination coordinates.';
+                });
+        }
+
+        // Share location
+        function shareLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const shareUrl = https://www.google.com/maps?q=${position.coords.latitude},${position.coords.longitude};
+                    alert(Share this link with your family: ${shareUrl});
+                });
+            } else {
+                alert('Geolocation is not supported by your browser.');
+            }
+        }
+    </script>
+</body>
+</html>
