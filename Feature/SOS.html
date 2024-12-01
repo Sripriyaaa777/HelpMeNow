@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOS Alert & Geofencing with Real-Time Location</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #141414; /* Netflix dark background */
+            color: #fff; /* White text */
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #1c1c1c; /* Dark gray */
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #e50914; /* Netflix red */
+        }
+
+        #map {
+            width: 100%;
+            height: 300px;
+            background-color: #222; /* Darker map background */
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        .geofence-alert {
+            display: none;
+            background-color: rgba(255, 0, 0, 0.8);
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 16px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+
+        .warning-message {
+            display: none;
+            background-color: rgba(255, 69, 0, 0.8); /* Darker orange */
+            color: #fff;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .sos-button {
+            background-color: #e50914; /* Dark pink */
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(229, 9, 20, 0.5);
+            transition: background-color 0.3s;
+        }
+
+        .sos-button:hover {
+            background-color: #b20710; /* Darker hover */
+        }
+
+        .info {
+            font-size: 14px;
+            color: #ccc; /* Light gray */
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>SOS Alert !!!!</h1>
+        <div class="warning-message" id="warningMessage">
+            ⚠ You have entered a risky area! Proceed with caution.
+        </div>
+        <div id="map"></div>
+        <div class="geofence-alert" id="geofenceAlert">
+            ⚠ Warning: Entering an Unsafe Area!
+        </div>
+        <button class="sos-button" onclick="triggerSOS()">Send SOS</button>
+        <p class="info">Press the SOS button to notify your emergency contacts.</p>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map').setView([14.0860746, 100.608406], 6);
+
+        var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        });
+        osm.addTo(map);
+
+        if (!navigator.geolocation) {
+            alert("Your browser doesn't support geolocation feature!");
+        } else {
+            setInterval(() => {
+                navigator.geolocation.getCurrentPosition(getPosition, showError);
+            }, 5000);
+        }
+
+        var marker, circle;
+
+        function getPosition(position) {
+            var lat = position.coords.latitude;
+            var long = position.coords.longitude;
+            var accuracy = position.coords.accuracy;
+
+            if (marker) { map.removeLayer(marker); }
+            if (circle) { map.removeLayer(circle); }
+
+            marker = L.marker([lat, long]).addTo(map);
+            circle = L.circle([lat, long], { radius: accuracy }).addTo(map);
+            var featureGroup = L.featureGroup([marker, circle]).addTo(map);
+            map.fitBounds(featureGroup.getBounds());
+
+            if (isInUnsafeZone(lat, long)) {
+                document.getElementById('geofenceAlert').style.display = 'block';
+                document.getElementById('warningMessage').style.display = 'block';
+            } else {
+                document.getElementById('geofenceAlert').style.display = 'none';
+                document.getElementById('warningMessage').style.display = 'none';
+            }
+
+            console.log("Coordinates: Lat: " + lat + " Long: " + long);
+        }
+
+        function showError(error) {
+            console.log("Error getting location: " + error.message);
+        }
+
+        function isInUnsafeZone(lat, long) {
+            var unsafeZoneLat = 14.0850746;
+            var unsafeZoneLng = 100.608406;
+            var distance = getDistance(lat, long, unsafeZoneLat, unsafeZoneLng);
+            return distance < 0.1;
+        }
+
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = 0.5 - Math.cos(dLat) / 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * (1 - Math.cos(dLon)) / 2;
+            return R * 2 * Math.asin(Math.sqrt(a));
+        }
+
+        function triggerSOS() {
+            alert("SOS Alert Sent to Emergency Contacts!");
+        }
+    </script>
+</body>
+
+</html>
