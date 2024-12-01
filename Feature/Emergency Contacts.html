@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Women's Safety App</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #141414;
+      color: #f5f5f5;
+    }
+
+    .header {
+      background-color: #ff0057; /* Dark Pink */
+      color: white;
+      text-align: center;
+      padding: 1rem 0;
+      font-size: 1.8rem;
+      font-weight: bold;
+      text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    .container {
+      max-width: 400px; /* Smaller Width */
+      margin: 2rem auto;
+      padding: 1rem;
+      background-color: #222;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    h2 {
+      color: #ff0057; /* Dark Pink */
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    form {
+      background-color: #333;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    input, button {
+      width: calc(100% - 2rem);
+      margin: 0.5rem 1rem;
+      padding: 0.7rem;
+      border: none;
+      border-radius: 5px;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    input {
+      background-color: #222;
+      color: #f5f5f5;
+    }
+
+    input::placeholder {
+      color: #888;
+    }
+
+    input:focus {
+      background-color: #ff0057;
+      color: white;
+    }
+
+    button {
+      background-color: #ff0057;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    button:hover {
+      background-color: #ff4370;
+      transform: scale(1.05);
+    }
+
+    .contact-list {
+      background-color: #333;
+      padding: 1rem;
+      border-radius: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .contact-card {
+      background-color: #444;
+      padding: 0.8rem;
+      border-radius: 5px;
+      margin-bottom: 0.5rem;
+      color: white;
+      font-size: 0.9rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .contact-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .footer {
+      text-align: center;
+      padding: 0.8rem 0;
+      background-color: #222;
+      color: #888;
+      font-size: 0.8rem;
+    }
+
+    a {
+      color: #ff0057;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    a:hover {
+      color: #ff4370;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">Women's Safety App</div>
+  <div class="container">
+    <h2>Emergency Contacts</h2>
+    <form id="contactForm">
+      <input type="text" id="contactName" placeholder="Contact Name" required>
+      <input type="tel" id="contactPhone" placeholder="Phone Number" required>
+      <input type="email" id="contactEmail" placeholder="Email Address" required>
+      <button type="submit">Add Contact</button>
+    </form>
+    <div class="contact-list" id="contactList">
+      <h3 style="color: #ff0057; font-size: 1rem; text-align: center;">Saved Contacts</h3>
+      <div id="contactCards"></div>
+    </div>
+  </div>
+  <div class="footer">© 2024 Women's Safety App</div>
+
+  <script>
+    const contactForm = document.getElementById('contactForm');
+    const contactList = document.getElementById('contactCards');
+
+    // Function to add a contact
+    function addContact(name, phone, email) {
+      const contactCard = document.createElement('div');
+      contactCard.className = 'contact-card';
+      contactCard.innerHTML = `
+        <p><strong>${name}</strong></p>
+        <p>📞 ${phone}</p>
+        <p>📧 ${email}</p>
+      `;
+      contactList.appendChild(contactCard);
+    }
+
+    // Form submission handler
+    contactForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const name = document.getElementById('contactName').value;
+      const phone = document.getElementById('contactPhone').value;
+      const email = document.getElementById('contactEmail').value;
+
+      addContact(name, phone, email);
+
+      // Clear form fields
+      contactForm.reset();
+    });
+  </script>
+</body>
+</html>
