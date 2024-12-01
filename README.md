@@ -52,6 +52,10 @@ The website can record audio and video for evidence. These media files can be ke
 
 ###Logged in
 ![image](https://github.com/user-attachments/assets/26dcf64a-6ae7-4c0d-b782-09e767cb61a5)
+
+
+
+
 ![image](https://github.com/user-attachments/assets/6be0b883-7624-4eec-a5ed-0f56ec090f85)
 
 ###Location Tracker
