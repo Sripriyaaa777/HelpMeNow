@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HelpMeNow</title>
+    <style>
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Roboto", sans-serif;
+            background-color: #141414;
+            color: #fff;
+        }
+
+        header {
+            background: url('https://source.unsplash.com/1920x800/?city,night') no-repeat center center/cover;
+            color: #fff;
+            padding: 150px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 0;
+        }
+
+        header .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        header h1 {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin: 0;
+            color: #C2185B; /* Deep Red */
+            text-shadow: 0 0 10px #aa0547;
+        }
+
+        header p {
+            font-size: 1.5rem;
+            margin: 15px 0;
+            color: #fff;
+        }
+
+        header .btn {
+            background-color: #C2185B; /* Dark Pink */
+            color: #fff;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 20px;
+            box-shadow: 0px 4px 8px rgba(194, 24, 91, 0.5);
+            transition: background-color 0.3s ease;
+        }
+
+        header .btn:hover {
+            background-color: #9C1B47; /* Darker pink for hover */
+        }
+
+        .section {
+            padding: 50px 20px;
+        }
+
+        .features, .important-contacts {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features h2, .important-contacts h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #C2185B; /* Dark Pink */
+            text-align: center;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-item {
+            background: #222;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s, background 0.3s;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
+        }
+
+        .feature-item:hover {
+            transform: scale(1.05);
+            background: #333;
+        }
+
+        .feature-item h3 {
+            font-size: 1.3rem;
+            margin: 10px 0;
+            color: #C2185B; /* Dark Pink */
+        }
+
+        .important-contacts ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .important-contacts li {
+            background: #222;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .important-contacts a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .important-contacts a:hover {
+            color: #C2185B; /* Dark Pink */
+        }
+
+        footer {
+            background: #000;
+            color: #aaa;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-top: 30px;
+        }
+
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .language-selector select {
+            background-color: #222;
+            color: #fff;
+            border: 1px solid #C2185B;
+            padding: 5px 10px;
+            font-size: 1rem;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <label for="language" style="color: white;">Choose Language:</label>
+        <select id="language" onchange="changeLanguage()">
+            <option value="en">English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="ml">മലയാളം</option>
+        </select>
+    </div>
+
+    <!-- Header Section -->
+    <header>
+        <div class="content">
+            <h1 id="title">HelpMeNow</h1>
+            <p id="description">Your safety, our priority. Join us for a safer tomorrow.</p>
+            <a href="login.html" class="btn" id="sosButton">Join Now</a>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section class="section features">
+        <h2 id="featuresTitle">App Features</h2>
+        <div class="features-grid">
+            <div class="feature-item">
+                <h3 id="sosAlertsTitle">🚨 SOS Alerts</h3>
+                <p id="sosAlertsDescription">Send emergency alerts instantly to your emergency contacts.</p>
+            </div>
+            <div class="feature-item">
+                <h3 id="publicTransportSafetyTitle">🚌 Public Transport Safety</h3>
+                <p id="publicTransportSafetyDescription">Track your journey in real-time and stay safe on public transport.</p>
+            </div>
+            <div class="feature-item">
+                <h3 id="audioVideoRecordingTitle">🎥 Audio & Video Recording</h3>
+                <p id="audioVideoRecordingDescription">Record audio and video in real-time for additional security.</p>
+            </div>
+            <div class="feature-item">
+                <h3 id="familyAccountsTitle">👨‍👩‍👧‍👦 Family Accounts</h3>
+                <p id="familyAccountsDescription">Connect with family members for collective safety measures.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Important Contacts Section -->
+    <section class="section important-contacts">
+        <h2>Important Contacts</h2>
+        <ul>
+            <li><a href="tel:+91100">👮‍♀ Police Station: 100</a></li>
+            <li><a href="tel:+918181">📞 Women Safety Line (India): 181</a></li>
+            <li><a href="tel:+91112">📱 Emergency Services: 112</a></li>
+        </ul>
+    </section>
+
+    <!-- Footer Section -->
+    <footer>
+        &copy; 2024 Women Safety App. All rights reserved. | Safety in your hands.
+    </footer>
+
+    <script>
+        const translations = {
+            en: {
+                title: "Women Safety App",
+                description: "Your safety, our priority. Join us for a safer tomorrow.",
+                sosButton: "Join Now",
+                featuresTitle: "App Features",
+                sosAlerts: {
+                    title: "🚨 SOS Alerts",
+                    description: "Send emergency alerts instantly to your emergency contacts."
+                },
+                publicTransportSafety: {
+                    title: "🚌 Public Transport Safety",
+                    description: "Track your journey in real-time and stay safe on public transport."
+                },
+                audioVideoRecording: {
+                    title: "🎥 Audio & Video Recording",
+                    description: "Record audio and video in real-time for additional security."
+                },
+                familyAccounts: {
+                    title: "👨‍👩‍👧‍👦 Family Accounts",
+                    description: "Connect with family members for collective safety measures."
+                }
+            },
+            hi: {
+                title: "महिला सुरक्षा ऐप",
+                description: "आपकी सुरक्षा, हमारी प्राथमिकता। सुरक्षित कल के लिए हमसे जुड़ें।",
+                sosButton: "अब जुड़ें",
+                featuresTitle: "ऐप सुविधाएँ",
+                sosAlerts: {
+                    title: "🚨 एसओएस अलर्ट्स",
+                    description: "आपातकालीन संपर्कों को तुरंत आपातकालीन अलर्ट भेजें।"
+                },
+                publicTransportSafety: {
+                    title: "🚌 सार्वजनिक परिवहन सुरक्षा",
+                    description: "यात्रा को रीयल-टाइम में ट्रैक करें और सार्वजनिक परिवहन पर सुरक्षित रहें।"
+                },
+                audioVideoRecording: {
+                    title: "🎥 ऑडियो और वीडियो रिकॉर्डिंग",
+                    description: "अतिरिक्त सुरक्षा के लिए रीयल-टाइम में ऑडियो और वीडियो रिकॉर्ड करें।"
+                },
+                familyAccounts: {
+                    title: "👨‍👩‍👧‍👦 परिवार खाता",
+                    description: "सामूहिक सुरक्षा उपायों के लिए परिवार के सदस्यों से जुड़ें।"
+                }
+            },
+            ml: {
+                title: "സ്ത്രീ സുരക്ഷാ ആപ്പ്",
+                description: "നിങ്ങളുടെ സുരക്ഷ, ഞങ്ങളുടെ മുൻഗണന. സുരക്ഷിത നാളേക്കായി ഞങ്ങളോടൊപ്പം ചേരുക.",
+                sosButton: "ഇപ്പോൾ ചേരുക",
+                featuresTitle: "ആപ്പ് സവിശേഷതകൾ",
+                sosAlerts: {
+                    title: "🚨 SOS അലേർട്ടുകൾ",
+                    description: "നിങ്ങളുടെ അടിയന്തര ബന്ധങ്ങളിലേക്ക് അടിയന്തര അലേർട്ടുകൾ ഉടൻ അയയ്ക്കുക."
+                },
+                publicTransportSafety: {
+                    title: "🚌 പൊതു ഗതാഗത സുരക്ഷ",
+                    description: "നിങ്ങളുടെ യാത്ര റിയൽ-ടൈമിൽ ട്രാക്കുചെയ്യുക, പൊതു ഗതാഗതത്തിൽ സുരക്ഷിതമായി ഇരിക്കുക."
+                },
+                audioVideoRecording: {
+                    title: "🎥 ഓഡിയോ & വീഡിയോ റെക്കോഡിംഗ്",
+                    description: "കൂടുതൽ സുരക്ഷയ്ക്കായി റിയൽ-ടൈമിൽ ഓഡിയോയും വീഡിയേയും റെക്കോർഡ് ചെയ്യുക."
+                },
+                familyAccounts: {
+                    title: "👨‍👩‍👧‍👦 കുടുംബ അക്കൗണ്ടുകൾ",
+                    description: "സമൂഹിക സുരക്ഷാ നടപടികൾക്കായി കുടുംബ അംഗങ്ങളുമായി ബന്ധിപ്പിക്കുക."
+                }
+            }
+        };
+
+        function changeLanguage() {
+            const lang = document.getElementById("language").value;
+            const elements = translations[lang];
+
+            document.getElementById("title").innerText = elements.title;
+            document.getElementById("description").innerText = elements.description;
+            document.getElementById("sosButton").innerText = elements.sosButton;
+            document.getElementById("featuresTitle").innerText = elements.featuresTitle;
+
+            document.getElementById("sosAlertsTitle").innerText = elements.sosAlerts.title;
+            document.getElementById("sosAlertsDescription").innerText = elements.sosAlerts.description;
+
+            document.getElementById("publicTransportSafetyTitle").innerText = elements.publicTransportSafety.title;
+            document.getElementById("publicTransportSafetyDescription").innerText = elements.publicTransportSafety.description;
+
+            document.getElementById("audioVideoRecordingTitle").innerText = elements.audioVideoRecording.title;
+            document.getElementById("audioVideoRecordingDescription").innerText = elements.audioVideoRecording.description;
+
+            document.getElementById("familyAccountsTitle").innerText = elements.familyAccounts.title;
+            document.getElementById("familyAccountsDescription").innerText = elements.familyAccounts.description;
+        }
+    </script>
+</body>
+</html>
